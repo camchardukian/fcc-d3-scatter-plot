@@ -15,11 +15,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const padding = 60;
 
     const xScale = d3.scaleLinear()
-        .domain([d3.min(data, (d) => d.Year), d3.max(data, (d) => d.Year)])
+        .domain([d3.min(data, (d) => d.Year), d3.max(data, (d) => d.Year + 1)])
         .range([padding, width - padding]);
 
     const yScale = d3.scaleLinear()
-        .domain([d3.min(data, (d) => d.Seconds), d3.max(data, (d) => d.Seconds)])
+        .domain([d3.max(data, (d) => d.Seconds), d3.min(data, (d) => d.Seconds)])
         .range([height - padding, padding]);
 
     const svg = d3
@@ -44,4 +44,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             return customDateValue;
         })
 
+    const xAxis = d3.axisBottom(xScale).tickFormat((d) => d)
+    const yAxis = d3.axisLeft(yScale).tickFormat((d) => new Date(1000 * d).toISOString().substring(14, 19))
+
+    svg.append("g")
+        .attr("id", "x-axis")
+        .attr("transform", `translate(0,${height - padding})`)
+        .call(xAxis)
+
+    svg.append("g")
+        .attr("id", "y-axis")
+        .attr("transform", `translate(${padding},0)`)
+        .call(yAxis)
 })
