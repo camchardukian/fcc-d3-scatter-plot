@@ -2,12 +2,21 @@ body {
   text-align: center;
 }
 
+.title-text {
+  margin-bottom: -24px;
+}
+
 .doping-dot {
   fill: orange;
 }
 
 .clean-dot {
   fill: green;
+}
+
+#legend {
+  outline: solid 3px #c3c3c3;
+  outline-offset: 5px;
 }
 
 #tooltip {

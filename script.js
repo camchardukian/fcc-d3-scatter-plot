@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const height = 400;
     const padding = 60;
 
+    // @TODO -- During the next coding session code up the legend.
+
     const xScale = d3.scaleLinear()
         .domain([d3.min(data, (d) => d.Year), d3.max(data, (d) => d.Year + 1)])
         .range([padding, width - padding]);
@@ -27,6 +29,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         .append("svg")
         .attr("width", width)
         .attr("height", height)
+
+    const legend = d3.select("svg")
+        .append("g")
+        .attr("id", "legend-container")
+        .append("g")
+        .attr("id", "legend")
+    legend.append("circle").attr("cx", 730).attr("cy", 144).attr("r", 6).style("fill", "orange")
+    legend.append("circle").attr("cx", 730).attr("cy", 159).attr("r", 6).style("fill", "green")
+    legend.append("text").attr("x", 475).attr("y", 145).text("Performances with doping allegations").style("font-size", "16px").attr("alignment-baseline", "middle")
+    legend.append("text").attr("x", 455).attr("y", 160).text("Performances without doping allegations").style("font-size", "16px").attr("alignment-baseline", "middle")
 
     const tooltip = d3.select("body")
         .append("div")
