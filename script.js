@@ -8,20 +8,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const data = await response.json()
-    console.log('dataaa', data)
 
     const width = 800;
     const height = 400;
     const padding = 60;
 
-    // @TODO -- During the next coding session code up the legend.
-
     const xScale = d3.scaleLinear()
-        .domain([d3.min(data, (d) => d.Year), d3.max(data, (d) => d.Year + 1)])
+        .domain([d3.min(data, (d) => d.Year - 1), d3.max(data, (d) => d.Year + 1)])
         .range([padding, width - padding]);
 
     const yScale = d3.scaleLinear()
-        .domain([d3.max(data, (d) => d.Seconds), d3.min(data, (d) => d.Seconds)])
+        .domain([
+            d3.max(data, (d) => new Date(1000 * d.Seconds)),
+            d3.min(data, (d) => new Date(1000 * d.Seconds))
+        ])
         .range([height - padding, padding]);
 
     const svg = d3
@@ -50,15 +50,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         .append("circle")
         .attr("class", (d) => `dot ${d.Doping ? 'doping-dot' : 'clean-dot'}`)
         .attr("cx", (d) => xScale(d.Year))
-        .attr("cy", (d) => yScale(d.Seconds))
+        .attr("cy", (d) => yScale(new Date(d.Seconds * 1000)))
         .attr("r", 5)
         .attr("data-xvalue", (d) => d.Year)
-        .attr("data-yvalue", (d) => {
-            const customDateValue = new Date(null)
-            customDateValue.setUTCMinutes(d.Time.substring(0, 2))
-            customDateValue.setUTCSeconds(d.Time.substring(4))
-            return customDateValue;
-        })
+        .attr("data-yvalue", (d) => new Date(d.Seconds * 1000))
         .on("mouseenter", (item) => {
             const itemData = item.target?.__data__
             tooltip.transition()
@@ -74,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         .on("mouseout", () => tooltip.transition().style("visibility", "hidden"))
 
     const xAxis = d3.axisBottom(xScale).tickFormat((d) => d)
-    const yAxis = d3.axisLeft(yScale).tickFormat((d) => new Date(1000 * d).toISOString().substring(14, 19))
+    const yAxis = d3.axisLeft(yScale).tickFormat(d3.timeFormat('%M:%S'))
 
     svg.append("g")
         .attr("id", "x-axis")
