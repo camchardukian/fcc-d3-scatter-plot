@@ -28,11 +28,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         .attr("width", width)
         .attr("height", height)
 
+    const tooltip = d3.select("body")
+        .append("div")
+        .attr("id", "tooltip")
+
     svg.selectAll("circle")
         .data(data)
         .enter()
         .append("circle")
-        .attr("class", "dot")
+        .attr("class", (d) => `dot ${d.Doping ? 'doping-dot' : 'clean-dot'}`)
         .attr("cx", (d) => xScale(d.Year))
         .attr("cy", (d) => yScale(d.Seconds))
         .attr("r", 5)
@@ -43,6 +47,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             customDateValue.setUTCSeconds(d.Time.substring(4))
             return customDateValue;
         })
+        .on("mouseenter", (item) => {
+            const itemData = item.target?.__data__
+            tooltip.transition()
+                .style("visibility", "visible")
+                .text(`Name: ${itemData.Name}
+                Nationality: ${itemData.Nationality}
+                Time: ${itemData.Time}
+                Year: ${itemData.Year}
+                Alleged Doping: ${itemData.Doping ? 'Yes' : 'No'}
+                `)
+                .attr("data-year", itemData.Year)
+        })
+        .on("mouseout", () => tooltip.transition().style("visibility", "hidden"))
 
     const xAxis = d3.axisBottom(xScale).tickFormat((d) => d)
     const yAxis = d3.axisLeft(yScale).tickFormat((d) => new Date(1000 * d).toISOString().substring(14, 19))

@@ -1,3 +1,25 @@
 body {
   text-align: center;
 }
+
+.doping-dot {
+  fill: orange;
+}
+
+.clean-dot {
+  fill: green;
+}
+
+#tooltip {
+  width: auto;
+  min-width: 300px;
+  height: auto;
+  background-color: lightblue;
+  display: inline-block;
+  padding: 8px 16px;
+  visibility: hidden;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  white-space: pre-line;
+}
